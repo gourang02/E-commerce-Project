@@ -1,4 +1,4 @@
-require("dotenv").config();
+try { require("dotenv").config(); } catch (_) { /* .env file not needed on Render */ }
 const connectDB = require("./src/config/db");
 const app = require("./src/app");
 
