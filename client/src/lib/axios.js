@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const API_BASE = import.meta.env.VITE_API_URL || 'https://e-commerce-project-0py5.onrender.com/api'
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: API_BASE,
   withCredentials: true, // send httpOnly refresh cookie
   headers: { 'Content-Type': 'application/json' },
 })
@@ -45,7 +47,7 @@ api.interceptors.response.use(
 
       try {
         const { data } = await axios.post(
-          `${import.meta.env.VITE_API_URL || '/api'}/auth/refresh-token`,
+          `${API_BASE}/auth/refresh-token`,
           {},
           { withCredentials: true }
         )
