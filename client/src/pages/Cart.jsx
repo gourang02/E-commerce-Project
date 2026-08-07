@@ -54,7 +54,7 @@ export default function Cart() {
               {/* Product Image */}
               <Link to={`/products/${item.product?.slug}`}>
                 <img
-                  src={item.product?.variants?.[0]?.images?.[0]?.url || 'https://via.placeholder.com/100x100/1e1e38/d4af37?text=🕶️'}
+                  src={item.product?.variants?.[0]?.images?.[0]?.url || 'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=600&auto=format&fit=crop'}
                   alt={item.product?.name}
                   style={{ width: 80, height: 80, borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }}
                 />

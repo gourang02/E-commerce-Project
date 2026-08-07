@@ -12,7 +12,7 @@ import ProductCard from '../components/product/ProductCard'
 function ImageGallery({ images }) {
   const [active, setActive] = useState(0)
   const [zoomStyle, setZoomStyle] = useState({})
-  const imgs = images?.length ? images : [{ url: 'https://via.placeholder.com/600x500/1e1e38/d4af37?text=🕶️' }]
+  const imgs = images?.length ? images : [{ url: 'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=600&auto=format&fit=crop' }]
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect()

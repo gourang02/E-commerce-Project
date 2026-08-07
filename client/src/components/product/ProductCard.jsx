@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
   const [wishlistLoading, setWishlistLoading] = useState(false)
 
   const firstVariant = product.variants?.[0]
-  const mainImage = firstVariant?.images?.[0]?.url || 'https://via.placeholder.com/400x300/1e1e38/d4af37?text=🕶️'
+  const mainImage = firstVariant?.images?.[0]?.url || 'https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=600&auto=format&fit=crop'
   const discountPct = product.discount || Math.round(((product.mrp - product.price) / product.mrp) * 100)
 
   const handleAddToCart = async (e) => {

@@ -17,12 +17,12 @@ const adminRoutes = require("./routes/admin.routes");
 const app = express();
 
 // ── Security headers ─────────────────────────────────────────────
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false, contentSecurityPolicy: false }));
 
 // ── CORS ─────────────────────────────────────────────────────────
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: true, // Dynamically reflect request origin for cross-domain requests (Netlify, Mobile, Dev)
     credentials: true, // allow httpOnly cookies
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "x-session-id"],
