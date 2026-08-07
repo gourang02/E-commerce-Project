@@ -108,7 +108,7 @@ export default function Home() {
   const { data: featured, isLoading: featuredLoading } = useQuery({
     queryKey: ['featured'],
     queryFn: () => api.get('/products/featured').then((r) => r.data.data),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   })
 
   const dealEnd = useRef(Date.now() + 8 * 3600 * 1000).current // 8 hours from load

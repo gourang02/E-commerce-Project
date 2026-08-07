@@ -77,7 +77,7 @@ export default function ProductListing() {
     queryKey: ['products', queryParams],
     queryFn: () => api.get('/products', { params: queryParams }).then((r) => r.data.data),
     keepPreviousData: true,
-    staleTime: 2 * 60 * 1000,
+    staleTime: 0,
   })
 
   const { data: categoriesData } = useQuery({
