@@ -58,26 +58,33 @@ const getProducts = asyncHandler(async (req, res) => {
   }
 
   const sortOptions = { [sort]: order === "asc" ? 1 : -1 };
-  const skip = (Number(page) - 1) * Number(limit);
+  const limitNum = Number(limit);
+  let pageNum = Number(page);
 
-  const [products, total] = await Promise.all([
-    Product.find(filter)
-      .sort(sortOptions)
-      .skip(skip)
-      .limit(Number(limit))
-      .populate("category", "name slug")
-      .lean(),
-    Product.countDocuments(filter),
-  ]);
+  const total = await Product.countDocuments(filter);
+  const pages = Math.ceil(total / limitNum) || 1;
+
+  if (pageNum > pages && total > 0) {
+    pageNum = 1;
+  }
+
+  const skip = (pageNum - 1) * limitNum;
+
+  const products = await Product.find(filter)
+    .sort(sortOptions)
+    .skip(skip)
+    .limit(limitNum)
+    .populate("category", "name slug")
+    .lean();
 
   return res.status(200).json(
     new ApiResponse(200, {
       products,
       pagination: {
         total,
-        page: Number(page),
-        limit: Number(limit),
-        pages: Math.ceil(total / Number(limit)),
+        page: pageNum,
+        limit: limitNum,
+        pages,
       },
     }, "Products fetched.")
   );

@@ -89,6 +89,18 @@ export default function ProductListing() {
   const products = data?.products || []
   const pagination = data?.pagination || {}
 
+  // Reset page to 1 whenever search, category, tag or filters change
+  useEffect(() => {
+    setPage(1)
+  }, [searchParams, filters])
+
+  // Fallback to page 1 if current page is out of bounds
+  useEffect(() => {
+    if (products.length === 0 && pagination.total > 0 && page > 1) {
+      setPage(1)
+    }
+  }, [products.length, pagination.total, page])
+
   const activeFilterCount = Object.values(filters).filter(Boolean).length
 
   const FiltersPanel = () => (
