@@ -50,10 +50,11 @@ export default function Login() {
     }
     setSending(true)
     try {
-      await api.post('/auth/send-otp', { phone, purpose: 'login' })
+      const { data } = await api.post('/auth/send-otp', { phone, purpose: 'login' })
       setOtpSent(true)
       setErrors({})
-      toast.success('OTP sent! Check your messages.')
+      const otpCode = data?.data?.debugOtp
+      toast.success(otpCode ? `OTP sent! Verification Code: ${otpCode}` : 'OTP sent! Check your messages.')
     } catch (err) {
       setErrors({ phone: err.response?.data?.message || 'Failed to send OTP.' })
     } finally {

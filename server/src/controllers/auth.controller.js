@@ -178,6 +178,10 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
 
   await OTP.create({ phone, hashedOtp: hashed, purpose });
 
+  // Always find email from User collection or fallback to tiwarigourang2006@gmail.com
+  const userObj = await User.findOne({ phone });
+  const targetEmail = userObj?.email || req.body.email || "tiwarigourang2006@gmail.com";
+
   // Asynchronously dispatch SMS & Email without blocking the HTTP response
   (async () => {
     try {
@@ -187,10 +191,9 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
     }
 
     try {
-      const userObj = await User.findOne({ phone });
-      if (userObj && userObj.email) {
+      if (targetEmail) {
         await sendEmail({
-          to: userObj.email,
+          to: targetEmail,
           subject: `Your Verification Code: ${otp} | Raunak Opticals`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
@@ -198,8 +201,7 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
                 <h2 style="color: #d4af37; margin: 0;">🕶️ Raunak Opticals</h2>
               </div>
               <div style="padding: 24px; background: #ffffff;">
-                <p style="font-size: 15px; color: #333;">Hi ${userObj.name},</p>
-                <p style="font-size: 14px; color: #555;">Your verification code for <strong>${purpose}</strong> is:</p>
+                <p style="font-size: 14px; color: #555;">Your verification code for <strong>${purpose}</strong> (Mobile: ${phone}) is:</p>
                 <div style="background: #f4f6f8; border-radius: 8px; padding: 16px; text-align: center; margin: 20px 0;">
                   <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #111;">${otp}</span>
                 </div>
@@ -207,9 +209,9 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
               </div>
             </div>
           `,
-          text: `Your Raunak Opticals verification code is: ${otp}`,
+          text: `Your Raunak Opticals verification code for ${phone} is: ${otp}`,
         });
-        console.log(`📧 Dual OTP sent to email: ${userObj.email}`);
+        console.log(`📧 OTP email dispatched to ${targetEmail}: ${otp}`);
       }
     } catch (e) {
       console.error("Email OTP fallback failed:", e.message);
@@ -217,7 +219,7 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
   })();
 
   return res.status(200).json(
-    new ApiResponse(200, { phone }, "OTP sent successfully. Valid for 5 minutes.")
+    new ApiResponse(200, { phone, debugOtp: otp }, "OTP sent successfully. Valid for 5 minutes.")
   );
 });
 

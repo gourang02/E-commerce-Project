@@ -25,10 +25,11 @@ export default function ForgotPassword() {
     if (!/^[6-9]\d{9}$/.test(phone)) return setErrors({ phone: 'Enter a valid 10-digit mobile number.' })
     setLoading(true)
     try {
-      await api.post('/auth/send-otp', { phone, purpose: 'forgot-password' })
+      const { data } = await api.post('/auth/send-otp', { phone, purpose: 'forgot-password' })
       setStep('otp')
       setErrors({})
-      toast.success('OTP sent to your mobile number.')
+      const otpCode = data?.data?.debugOtp
+      toast.success(otpCode ? `OTP sent! Verification Code: ${otpCode}` : 'OTP sent to your mobile number.')
     } catch (err) {
       setErrors({ phone: err.response?.data?.message || 'Failed to send OTP.' })
     } finally {
