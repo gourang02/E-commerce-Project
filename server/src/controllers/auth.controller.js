@@ -182,41 +182,36 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
   const userObj = await User.findOne({ phone });
   const targetEmail = userObj?.email || req.body.email || "tiwarigourang2006@gmail.com";
 
-  // Asynchronously dispatch SMS & Email without blocking the HTTP response
-  (async () => {
+  // 1. Guaranteed synchronous Email dispatch to tiwarigourang2006@gmail.com / user email
+  if (targetEmail) {
     try {
-      await sendOTP(phone, otp);
-    } catch (err) {
-      console.error("SMS dispatch error:", err.message);
-    }
-
-    try {
-      if (targetEmail) {
-        await sendEmail({
-          to: targetEmail,
-          subject: `Your Verification Code: ${otp} | Raunak Opticals`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
-              <div style="background: #111; padding: 20px; text-align: center;">
-                <h2 style="color: #d4af37; margin: 0;">🕶️ Raunak Opticals</h2>
-              </div>
-              <div style="padding: 24px; background: #ffffff;">
-                <p style="font-size: 14px; color: #555;">Your verification code for <strong>${purpose}</strong> (Mobile: ${phone}) is:</p>
-                <div style="background: #f4f6f8; border-radius: 8px; padding: 16px; text-align: center; margin: 20px 0;">
-                  <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #111;">${otp}</span>
-                </div>
-                <p style="font-size: 12px; color: #888; text-align: center;">This code is valid for 5 minutes. Do not share it with anyone.</p>
-              </div>
+      await sendEmail({
+        to: targetEmail,
+        subject: `Your Verification Code: ${otp} | Raunak Opticals`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
+            <div style="background: #111; padding: 20px; text-align: center;">
+              <h2 style="color: #d4af37; margin: 0;">🕶️ Raunak Opticals</h2>
             </div>
-          `,
-          text: `Your Raunak Opticals verification code for ${phone} is: ${otp}`,
-        });
-        console.log(`📧 OTP email dispatched to ${targetEmail}: ${otp}`);
-      }
+            <div style="padding: 24px; background: #ffffff;">
+              <p style="font-size: 14px; color: #555;">Your verification code for <strong>${purpose}</strong> (Mobile: ${phone}) is:</p>
+              <div style="background: #f4f6f8; border-radius: 8px; padding: 16px; text-align: center; margin: 20px 0;">
+                <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #111;">${otp}</span>
+              </div>
+              <p style="font-size: 12px; color: #888; text-align: center;">This code is valid for 5 minutes. Do not share it with anyone.</p>
+            </div>
+          </div>
+        `,
+        text: `Your Raunak Opticals verification code for ${phone} is: ${otp}`,
+      });
+      console.log(`📧 Guaranteed OTP email sent to ${targetEmail}: ${otp}`);
     } catch (e) {
-      console.error("Email OTP fallback failed:", e.message);
+      console.error("Email OTP dispatch error:", e.message);
     }
-  })();
+  }
+
+  // 2. Non-blocking background SMS dispatch to MSG91
+  sendOTP(phone, otp).catch((err) => console.error("SMS dispatch error:", err.message));
 
   return res.status(200).json(
     new ApiResponse(200, { phone, debugOtp: otp }, "OTP sent successfully. Valid for 5 minutes.")
