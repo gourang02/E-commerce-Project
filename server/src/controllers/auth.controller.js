@@ -166,8 +166,8 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
     phone,
     expiresAt: { $gt: new Date() },
   });
-  if (recentOtps >= 3) {
-    throw new ApiError(429, "Too many OTP requests. Please wait before requesting again.");
+  if (recentOtps >= 10) {
+    throw new ApiError(429, "Too many OTP requests. Please wait 5 minutes before requesting again.");
   }
 
   // Delete any existing OTPs for this phone+purpose
