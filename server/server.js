@@ -15,9 +15,14 @@ process.on("unhandledRejection", (err) => {
 console.log("🔄 [2/5] Loading dotenv...");
 try { require("dotenv").config(); } catch (_) { console.log("   (no .env file, using system env vars)"); }
 
+// Render uses port 10000 by default
+const PORT = process.env.PORT || 10000;
+const HOST = "0.0.0.0";
+
 console.log("🔄 [3/5] Env check:", {
   NODE_ENV: process.env.NODE_ENV || "(not set)",
-  PORT: process.env.PORT || "(not set, default 5000)",
+  PORT: PORT,
+  HOST: HOST,
   MONGO_URI: process.env.MONGO_URI ? "✅ SET" : "❌ NOT SET",
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET ? "✅ SET" : "❌ NOT SET",
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? "✅ SET" : "❌ NOT SET",
@@ -29,17 +34,15 @@ const connectDB = require("./src/config/db");
 const app = require("./src/app");
 console.log("   ✅ Modules loaded successfully");
 
-const PORT = process.env.PORT || 5000;
-
 const startServer = async () => {
   console.log("🔄 [5/5] Connecting to MongoDB...");
   await connectDB();
 
-  app.listen(PORT, () => {
+  app.listen(PORT, HOST, () => {
     console.log(`
 ╔══════════════════════════════════════════╗
 ║    🕶️  Raunak Opticals API Server         ║
-║    🚀  Running on port ${PORT}              ║
+║    🚀  Running on ${HOST}:${PORT}          ║
 ║    🌍  Environment: ${process.env.NODE_ENV || "development"}        ║
 ╚══════════════════════════════════════════╝
     `);
