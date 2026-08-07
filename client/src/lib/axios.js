@@ -61,7 +61,9 @@ api.interceptors.response.use(
         refreshQueue.forEach(({ reject }) => reject(error))
         refreshQueue = []
         localStorage.removeItem('accessToken')
-        window.location.href = '/login'
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+          window.location.href = '/login'
+        }
         return Promise.reject(error)
       } finally {
         isRefreshing = false
