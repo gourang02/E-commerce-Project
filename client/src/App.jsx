@@ -10,9 +10,10 @@ import BottomNav from './components/common/BottomNav'
 import useAuthStore from './store/authStore'
 import useCartStore from './store/cartStore'
 
-// ── Lazy load pages ──────────────────────────────────────────────
-const Home = lazy(() => import('./pages/Home'))
-const ProductListing = lazy(() => import('./pages/ProductListing'))
+import Home from './pages/Home'
+import ProductListing from './pages/ProductListing'
+
+// ── Lazy load secondary pages ─────────────────────────────────────
 const ProductDetail = lazy(() => import('./pages/ProductDetail'))
 const Cart = lazy(() => import('./pages/Cart'))
 const Login = lazy(() => import('./pages/auth/Login'))
