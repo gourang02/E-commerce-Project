@@ -68,7 +68,7 @@ export default function Footer() {
           {[
             { icon: <Phone size={14} />, text: '+91 98765 43210' },
             { icon: <Mail size={14} />, text: 'support@raunakopticals.com' },
-            { icon: <MapPin size={14} />, text: 'Shop No. 12, Main Market\nYour City, State 110001' },
+            { icon: <MapPin size={14} />, text: 'Harsahy Market, Opposite of Harsahy College,\nP. Road, Kanpur' },
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>
               <span style={{ color: 'var(--accent)', flexShrink: 0, marginTop: '2px' }}>{item.icon}</span>
