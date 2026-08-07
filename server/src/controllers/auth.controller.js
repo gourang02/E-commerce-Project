@@ -180,6 +180,36 @@ const sendOTPHandler = asyncHandler(async (req, res) => {
 
   await sendOTP(phone, otp);
 
+  // Dual Dispatch: Also send OTP via Email if a user account exists with this phone
+  const userObj = await User.findOne({ phone });
+  if (userObj && userObj.email) {
+    try {
+      await sendEmail({
+        to: userObj.email,
+        subject: `Your Verification Code: ${otp} | Raunak Opticals`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 12px; overflow: hidden;">
+            <div style="background: #111; padding: 20px; text-align: center;">
+              <h2 style="color: #d4af37; margin: 0;">🕶️ Raunak Opticals</h2>
+            </div>
+            <div style="padding: 24px; background: #ffffff;">
+              <p style="font-size: 15px; color: #333;">Hi ${userObj.name},</p>
+              <p style="font-size: 14px; color: #555;">Your verification code for <strong>${purpose}</strong> is:</p>
+              <div style="background: #f4f6f8; border-radius: 8px; padding: 16px; text-align: center; margin: 20px 0;">
+                <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #111;">${otp}</span>
+              </div>
+              <p style="font-size: 12px; color: #888; text-align: center;">This code is valid for 5 minutes. Do not share it with anyone.</p>
+            </div>
+          </div>
+        `,
+        text: `Your Raunak Opticals verification code is: ${otp}`,
+      });
+      console.log(`📧 Dual OTP sent to email: ${userObj.email}`);
+    } catch (e) {
+      console.error("Email OTP fallback failed:", e.message);
+    }
+  }
+
   return res.status(200).json(
     new ApiResponse(200, { phone }, "OTP sent successfully. Valid for 5 minutes.")
   );
