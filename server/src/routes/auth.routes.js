@@ -40,7 +40,7 @@ const otpRules = [
 
 const verifyOtpRules = [
   body("phone").matches(/^[6-9]\d{9}$/).withMessage("Enter a valid 10-digit Indian mobile number."),
-  body("otp").isLength({ min: 6, max: 6 }).withMessage("OTP must be 6 digits.").isNumeric(),
+  body("otp").isLength({ min: 4, max: 6 }).withMessage("OTP must be 4 to 6 digits.").isNumeric(),
   body("purpose").isIn(["signup", "login", "forgot-password"]).withMessage("Invalid purpose."),
 ];
 
