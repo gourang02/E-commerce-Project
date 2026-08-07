@@ -46,8 +46,8 @@ const sendOTP = async (phone, otp) => {
     console.log(`📱  [MSG91] OTP sent to ${formattedPhone}:`, response.data);
     return { success: true, data: response.data };
   } catch (error) {
-    console.error("MSG91 OTP send failed:", error.response?.data || error.message);
-    throw new Error("Failed to send OTP. Please try again.");
+    console.error("📱 [MSG91 WARN] SMS OTP dispatch issue:", error.response?.data || error.message);
+    return { success: false, error: error.response?.data?.message || error.message };
   }
 };
 
