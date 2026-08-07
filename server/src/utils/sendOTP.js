@@ -20,13 +20,20 @@ const sendOTP = async (phone, otp) => {
     const cleanPhone = phone.replace(/\D/g, "");
     const formattedPhone = cleanPhone.startsWith("91") ? cleanPhone : `91${cleanPhone}`;
 
+    const payload = {
+      mobile: formattedPhone,
+      otp: String(otp),
+    };
+
+    if (process.env.MSG91_WIDGET_ID) {
+      payload.widgetId = process.env.MSG91_WIDGET_ID;
+    } else if (process.env.MSG91_TEMPLATE_ID) {
+      payload.template_id = process.env.MSG91_TEMPLATE_ID;
+    }
+
     const response = await axios.post(
       "https://control.msg91.com/api/v5/otp",
-      {
-        template_id: process.env.MSG91_TEMPLATE_ID,
-        mobile: formattedPhone,
-        otp: String(otp),
-      },
+      payload,
       {
         headers: {
           authkey: process.env.MSG91_AUTH_KEY,
