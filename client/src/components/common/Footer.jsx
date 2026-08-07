@@ -67,7 +67,7 @@ export default function Footer() {
           <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '16px' }}>Contact</h4>
           {[
             { icon: <Phone size={14} />, text: '+91 98765 43210' },
-            { icon: <Mail size={14} />, text: 'support@raunakopticals.com' },
+            { icon: <Mail size={14} />, text: 'tiwarigourang2006@gmail.com' },
             { icon: <MapPin size={14} />, text: 'Harsahy Market, Opposite of Harsahy College,\nP. Road, Kanpur' },
           ].map((item, i) => (
             <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>
