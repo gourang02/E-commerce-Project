@@ -16,23 +16,27 @@ const sendOTP = async (phone, otp) => {
   }
 
   try {
-    // Ensure phone is in E.164 format: 91XXXXXXXXXX (no + sign for MSG91)
-    const formattedPhone = phone.startsWith("91") ? phone : `91${phone}`;
+    // Ensure phone is numeric and formatted: 91XXXXXXXXXX (no + sign for MSG91)
+    const cleanPhone = phone.replace(/\D/g, "");
+    const formattedPhone = cleanPhone.startsWith("91") ? cleanPhone : `91${cleanPhone}`;
 
     const response = await axios.post(
       "https://control.msg91.com/api/v5/otp",
       {
         template_id: process.env.MSG91_TEMPLATE_ID,
         mobile: formattedPhone,
-        authkey: process.env.MSG91_AUTH_KEY,
-        otp,
+        otp: String(otp),
       },
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          authkey: process.env.MSG91_AUTH_KEY,
+          "Content-Type": "application/json",
+        },
         timeout: 10000,
       }
     );
 
+    console.log(`📱  [MSG91] OTP sent to ${formattedPhone}:`, response.data);
     return { success: true, data: response.data };
   } catch (error) {
     console.error("MSG91 OTP send failed:", error.response?.data || error.message);
